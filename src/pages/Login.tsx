@@ -11,16 +11,18 @@ import FormControl from '@material-ui/core/FormControl';
 interface LoginProps {
     user: any;
     loginUser: (login: LoginEntity) => LoginEntity
+    history: any;
 }
 
-const Login: FC<LoginProps> = ({user, loginUser}) => {
+const Login: FC<LoginProps> = ({user, loginUser, history}) => {
 
     const {handleSubmit, control, errors: fieldsErrors, reset} = useForm<LoginEntity>();
 
     const classes = useStyles();
 
-    const onSubmit = (data: LoginEntity) => {
-        //loginUser(data);
+    const onSubmit = async (data: LoginEntity) => {
+        await loginUser(data);
+        history.push('/about')
         console.log(data)
     };
 
