@@ -2,9 +2,11 @@ import React, {FC} from 'react';
 import {connect} from "react-redux";
 import {loginUser} from "../redux/auth/actions";
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import {Button} from "@material-ui/core";
+import {Button, TextField} from "@material-ui/core";
 import {LoginEntity} from '../models/login'
-import {useForm} from "react-hook-form";
+import {useForm, Controller} from "react-hook-form";
+import FormControl from '@material-ui/core/FormControl';
+
 
 interface LoginProps {
     user: any;
@@ -13,39 +15,60 @@ interface LoginProps {
 
 const Login: FC<LoginProps> = ({user, loginUser}) => {
 
-    const { register, handleSubmit, errors } = useForm<LoginEntity>();
+    const {handleSubmit, control, errors: fieldsErrors, reset} = useForm<LoginEntity>();
 
     const classes = useStyles();
 
     const onSubmit = (data: LoginEntity) => {
-        loginUser(data);
+        //loginUser(data);
+        console.log(data)
     };
 
 
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)} className={classes.root} noValidate autoComplete="off">
-                <label htmlFor="username">Username</label>
-                <input
-                    name="username"
-                    id="username"
-                    ref={register({required: true})}/><br/>
-                {errors.username && errors.username.type === "required" && (
-                    <div className="error">Your must enter your name.</div>
-                )}
-                <label htmlFor="password">Password</label>
-                <input
-                    name="password"
-                    id="password"
-                    ref={register({required: true})}/>
-                {errors.password && errors.password.type === "required" && (
-                    <div className="error">Your must enter your name.</div>
-                )}
-                <div>
-                    <Button type="submit" variant="contained" color="primary">
-                        Submit
-                    </Button>
-                </div>
+                <FormControl fullWidth variant="outlined">
+                    <Controller
+                        name="username"
+                        as={
+                            <TextField
+                                id="username"
+                                helperText={fieldsErrors.username ? fieldsErrors.username.message : null}
+                                variant="outlined"
+                                label="Username"
+                                error={!!fieldsErrors.username}
+                            />
+                        }
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                            required: 'Required',
+                        }}
+                    />
+                </FormControl>
+                <FormControl fullWidth variant="outlined">
+                    <Controller
+                        name="password"
+                        as={
+                            <TextField
+                                id="password"
+                                helperText={fieldsErrors.password ? fieldsErrors.password.message : null}
+                                variant="outlined"
+                                label="Password"
+                                error={!!fieldsErrors.password}
+                            />
+                        }
+                        control={control}
+                        defaultValue=""
+                        rules={{
+                            required: 'Required',
+                        }}
+                    />
+                </FormControl>
+                <Button type="submit" variant="contained" color="primary">
+                    Submit
+                </Button>
             </form>
         </div>
     );
